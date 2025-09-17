@@ -13,6 +13,7 @@ class Product(models.Model):
         ('tumbler', 'Tumbler'),
     ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=127)
     price = models.IntegerField()
     description = models.TextField()
@@ -23,7 +24,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return self.title
+        return self.name
     
     @property
     def is_booming_product(self):
@@ -32,17 +33,3 @@ class Product(models.Model):
     def increment_views(self):
         self.product_views += 1
         self.save()
-
-class Employee(models.Model):
-    nama = models.CharField(max_length=255)
-    age = models.PositiveIntegerField()
-    persona = models.TextField()
-
-    def get_name(self):
-        return self.nama
-    
-    def get_age(self):
-        return self.age
-    
-    def get_persona(self):
-        return self.persona

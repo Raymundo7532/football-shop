@@ -2,7 +2,8 @@ Nama: Raymundo Rafaelito Maryos Von Woloblo
 Kelas: PBP B
 
 ## Tugas 3
->
+> Screenshot:
+- 
 
 ## Tugas 2
 > Tautan menuju aplikasi PWS yang sudah di-deploy: https://raymundo-rafaelito-footballshop.pbp.cs.ui.ac.id/
