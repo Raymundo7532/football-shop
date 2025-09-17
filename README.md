@@ -2,8 +2,26 @@ Nama: Raymundo Rafaelito Maryos Von Woloblo
 Kelas: PBP B
 
 ## Tugas 3
+> Data delivery diperlukan untuk memastikan pertukaran data yang efisien, aman, dan skalabel antar komponen platform, seperti server dan klien atau microservices. Tanpa mekanisme ini, integrasi data menjadi tidak terstruktur, rentan terhadap kesalahan, dan sulit diskalakan, sehingga menghambat performa keseluruhan sistem.
+
+> JSON lebih unggul daripada XML untuk sebagian besar aplikasi web modern karena struktur yang lebih sederhana, ukuran file yang lebih kecil, dan kemudahan parsing di bahasa seperti JavaScript. JSON lebih populer karena mendukung efisiensi bandwidth, fleksibilitas dalam API RESTful, dan adopsi luas di framework kontemporer, sedangkan XML lebih sesuai untuk dokumen kompleks dengan skema ketat.
+
+> Method is_valid() pada form Django berfungsi untuk memvalidasi input pengguna berdasarkan aturan yang didefinisikan, mengembalikan True jika valid beserta data yang telah dibersihkan, atau False dengan daftar kesalahan. Method ini esensial untuk mencegah data tidak valid memasuki database, mengurangi kerentanan keamanan, dan menjaga integritas aplikasi tanpa validasi manual yang rumit.
+
+> CSRF token diperlukan untuk mencegah serangan Cross-Site Request Forgery (CSRF), di mana penyerang memanipulasi sesi pengguna yang terautentikasi melalui form palsu. Tanpa token, Django tidak dapat memverifikasi asal request, berpotensi mengizinkan aksi tidak sah seperti transfer dana ilegal. Penyerang dapat mengeksploitasi ini melalui phishing atau situs berbahaya yang menyamar sebagai form legitimate, memanfaatkan cookie sesi untuk eksekusi aksi berbahaya.
+
+> Langkah-langkah mengimplementasikan cheklist tugas 2:
+  - Menmbahkan 4 fungsi views baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML by ID, dan JSON by ID serta membuat routing URL untuk masing-masing fungsi views tadi.
+  - Mengimplementasikan skeleton sebagai keranka views
+  - Membuat halaman yang menampilkan data objek model yang memiliki tombol "Add" yang akan redirect ke halaman form, serta tombol "Detail" pada setiap data objek model yang akan menampilkan halaman detail objek.
+  - Membuat halaman form untuk menambahkan objek model pada app sebelumnya.
+  - Membuat halaman yang menampilkan detail dari setiap data objek model.
+
 > Screenshot:
-- 
+- ![alt text](postman/xml.png)
+- ![alt text](postman/json.png)
+- ![alt text](postman/xml_by_id.png)
+- ![alt text](postman/json_by_id.png)
 
 ## Tugas 2
 > Tautan menuju aplikasi PWS yang sudah di-deploy: https://raymundo-rafaelito-footballshop.pbp.cs.ui.ac.id/
