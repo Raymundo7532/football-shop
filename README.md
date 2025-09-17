@@ -18,10 +18,10 @@ Kelas: PBP B
   - Membuat halaman yang menampilkan detail dari setiap data objek model.
 
 > Screenshot:
-- ![alt text](postman/xml.png)
-- ![alt text](postman/json.png)
-- ![alt text](postman/xml_by_id.png)
-- ![alt text](postman/json_by_id.png)
+- ![alt text](xml.png)
+- ![alt text](json.png)
+- ![alt text](xml_by_id.png)
+- ![alt text](json_by_id.png)
 
 ## Tugas 2
 > Tautan menuju aplikasi PWS yang sudah di-deploy: https://raymundo-rafaelito-footballshop.pbp.cs.ui.ac.id/
