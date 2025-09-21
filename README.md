@@ -12,7 +12,7 @@ Kelas: PBP B
 
 > Langkah-langkah mengimplementasikan cheklist tugas 2:
   - Menmbahkan 4 fungsi views baru untuk melihat objek yang sudah ditambahkan dalam format XML, JSON, XML by ID, dan JSON by ID serta membuat routing URL untuk masing-masing fungsi views tadi.
-  - Mengimplementasikan skeleton sebagai keranka views
+  - Mengimplementasikan skeleton sebagai kerangka views
   - Membuat halaman yang menampilkan data objek model yang memiliki tombol "Add" yang akan redirect ke halaman form, serta tombol "Detail" pada setiap data objek model yang akan menampilkan halaman detail objek.
   - Membuat halaman form untuk menambahkan objek model pada app sebelumnya.
   - Membuat halaman yang menampilkan detail dari setiap data objek model.
