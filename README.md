@@ -1,5 +1,6 @@
 Nama: Raymundo Rafaelito Maryos Von Woloblo
 Kelas: PBP B
+## Tugas 5
 
 ## Tugas 4
 - Django AuthenticationForm adalah form bawaan Django yang dipakai untuk login user dengan validasi username dan password secara otomatis. Kelebihannya simpel, langsung terintegrasi dengan sistem autentikasi Django, dan hemat waktu. Kekurangannya agak terbatas kalau butuh kustomisasi login lebih kompleks (misalnya tambah field atau logika lain).
@@ -33,11 +34,11 @@ Kelas: PBP B
   - Membuat halaman form untuk menambahkan objek model pada app sebelumnya
   - Membuat halaman yang menampilkan detail dari setiap data objek model
 
-- Screenshot:
-- ![alt text](xml.png)
-- ![alt text](json.png)
-- ![alt text](xml_by_id.png)
-- ![alt text](json_by_id.png)
+- Tangkapan layar Postman:
+  - ![alt text](xml.png)
+  - ![alt text](json.png)
+  - ![alt text](xml_by_id.png)
+  - ![alt text](json_by_id.png)
 
 ## Tugas 2
 - Tautan menuju aplikasi PWS yang sudah di-deploy: https://raymundo-rafaelito-footballshop.pbp.cs.ui.ac.id/
