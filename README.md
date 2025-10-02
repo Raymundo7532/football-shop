@@ -1,6 +1,18 @@
 Nama: Raymundo Rafaelito Maryos Von Woloblo
 Kelas: PBP B
 ## Tugas 5
+- Prioritas CSS berjalan berdasarkan: pertama deklarasi dengan !important, lalu origin stylesheet (author/user/user-agent), kemudian specificity (inline > ID > class/attribute/pseudo-class > tag/pseudo-element), dan jika specificity sama diputuskan oleh source order (rule yang didefinisikan paling akhir menang). Intinya: jangan pakai !important sembarangan; atur struktur selector dan urutan file supaya predictable.
+
+- Responsive design penting karena pengguna mengakses web dari banyak ukuran layar — tanpa responsif UX buruk, konversi turun, dan SEO bisa terpengaruh; contoh yang sudah responsive misalnya Google Search atau X karena mereka prioritas mobile, sedangkan contoh yang kurang responsive biasanya situs intranet lama atau admin panel enterprise yang dibuat khusus desktop
+
+- Margin adalah ruang di luar elemen untuk memisahkan elemen satu dengan lain, border adalah garis pembatas yang bisa diberi warna/ketebalan, dan padding adalah ruang di dalam border agar konten tidak menempel; implementasinya via margin, border, dan padding di CSS (shorthand tersedia), dan gunakan box-sizing: border-box supaya ukuran elemen termasuk padding & border sehingga layout lebih mudah dikendalikan.
+
+- Flexbox adalah layout satu-dimensi yang bagus untuk menyusun item dalam baris atau kolom (mis. nav, toolbar, row card) dengan properti seperti justify-content, align-items, dan flex; CSS Grid adalah layout dua-dimensi yang lebih kuat untuk tata letak halaman atau area kompleks (baris + kolom) dengan grid-template-*, grid-row/column; praktisnya, gunakan Grid untuk struktur halaman dan Flexbox untuk menyusun komponen di dalam area tersebut.
+
+Langkah-langkah mengimplementasikan cheklist tugas 5:
+  - Menambahkan Tailwind, fitur Edit Product, fitur Hapus Product, dan Navigation Bar ke aplikasi Main
+  - Konfigurasi file statis pada Main
+  - Styling pada Main dengan Tailwind dan External CSS
 
 ## Tugas 4
 - Django AuthenticationForm adalah form bawaan Django yang dipakai untuk login user dengan validasi username dan password secara otomatis. Kelebihannya simpel, langsung terintegrasi dengan sistem autentikasi Django, dan hemat waktu. Kekurangannya agak terbatas kalau butuh kustomisasi login lebih kompleks (misalnya tambah field atau logika lain).
