@@ -1,5 +1,16 @@
 Nama: Raymundo Rafaelito Maryos Von Woloblo
 Kelas: PBP B
+## Tugas 6
+- Synchronous request memblokir dan biasanya menyebabkan reload halaman (sederhana tapi lambat), sedangkan asynchronous request (AJAX/fetch) berjalan di background tanpa reload sehingga UI tetap responsif dan hanya bagian yang perlu saja di-update (lebih cepat tapi butuh logika tambahan seperti manajemen state, error handling, dan history).
+
+- AJAX di Django bekerja seperti ini: JS kirim fetch/XHR ke view Django (sertakan CSRF dan credentials), view memproses (validasi, auth, create/update), lalu JsonResponse dikembalikan; JS membaca JSON dan update UI tanpa reload — untuk login/register server tetap harus verifikasi kredensial dan mengembalikan response yang aman (session cookie atau token) dan client harus menangani cookie/credential dengan benar.
+
+- AJAX memberi UX lebih cepat dan interaktif karena hanya mengupdate bagian halaman yang perlu dan menghemat bandwidth, cocok untuk fitur real-time atau inline edit; tapi menambah kompleksitas (manajemen state, history, fallback/SEO) dibanding render server-side penuh.
+
+- Keamanan AJAX untuk login/register ditangani di server: pakai Django auth (authenticate/login, create_user), jangan @csrf_exempt, gunakan CSRF token pada header, selalu HTTPS, set cookie flags (Secure, HttpOnly, SameSite), batasi rate login (anti-brute force), validasi server-side, minimalkan info error, dan jangan simpan token sensitif di localStorage — client cukup kirim request dengan X-CSRFToken dan credentials:'same-origin'.
+
+- AJAX meningkatkan UX dengan membuat interaksi lebih cepat, mulus, dan responsif (tanpa reload), tapi menambah tanggung jawab developer: harus menangani history, aksesibilitas, SEO, dan memberikan feedback/loading/error yang jelas — kalau diterapkan benar, UX jadi jauh lebih nyaman; kalau asal-asalan, malah membingungkan pengguna.
+
 ## Tugas 5
 - Prioritas CSS berjalan berdasarkan: pertama deklarasi dengan !important, lalu origin stylesheet (author/user/user-agent), kemudian specificity (inline > ID > class/attribute/pseudo-class > tag/pseudo-element), dan jika specificity sama diputuskan oleh source order (rule yang didefinisikan paling akhir menang). Intinya: jangan pakai !important sembarangan; atur struktur selector dan urutan file supaya predictable.
 
@@ -19,7 +30,7 @@ Langkah-langkah mengimplementasikan cheklist tugas 5:
 
 - Autentikasi itu proses memverifikasi identitas user (misalnya login dengan username & password), sedangkan otorisasi menentukan hak akses user setelah terverifikasi (misalnya hanya admin bisa tambah produk). Django mengimplementasikan keduanya lewat AuthenticationMiddleware untuk autentikasi dan permissions/decorators untuk otorisasi.
 
-- Session menyimpan data di server (lebih aman, user hanya pegang session ID), sedangkan cookies menyimpan data langsung di browser (lebih ringan tapi lebih berisiko). Kelebihan session adalah keamanan lebih baik, sementara cookies unggul di performa karena langsung di sisi client. Kekurangannya, session bisa membebani server, cookies bisa disalahgunakan kalau tidak diamankan.
+- Session menyimpan data di server (lebih aman, user hanya pegang session ID), sedangkan cookies menyimpan data langsung di browser (lebih ringan, tapi lebih berisiko). Kelebihan session adalah keamanan lebih baik, sementara cookies unggul di performa karena langsung di sisi client. Kekurangannya, session bisa membebani server, cookies bisa disalahgunakan kalau tidak diamankan.
 
 - Cookies tidak otomatis aman secara default, ada risiko seperti pencurian data lewat XSS atau CSRF. Django mengurangi risiko ini dengan fitur keamanan bawaan seperti HttpOnly, Secure, dan CSRF tokens. Jadi aman digunakan asal developer mengaktifkan opsi-opsi keamanan tersebut.
 

@@ -30,7 +30,7 @@ class Product(models.Model):
     
     @property
     def is_booming_product(self):
-        return self.product_views > 20000
+        return self.product_views > 50
     
     def increment_views(self):
         self.product_views += 1
