@@ -181,62 +181,35 @@ def add_product_entry_ajax(request):
 
 @csrf_exempt
 @require_POST
-def update_product_entry_ajax(request):
-    if request.method != 'POST':
-        return HttpResponseBadRequest('Invalid method')
+def update_product_entry_ajax(request, product_id):
+    try:
+        product = Product.objects.get(pk=product_id)
+        product.name = request.POST.get("name")
+        product.price = request.POST.get("price")
+        product.description = request.POST.get("description")
+        product.category = request.POST.get("category")
+        product.thumbnail = request.POST.get("thumbnail")
+        product.is_featured = request.POST.get("is_featured")
+        product.save()
+        return JsonResponse({"status": "success", "message": "Product updated successfully!"})
+    except Product.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Product not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+@csrf_exempt
+@require_POST
+def delete_product_entry_ajax(request, product_id):
+    try:
+        product = Product.objects.get(pk=product_id)
 
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden('Login required')
+        # Optional: pastikan hanya pemilik produk yang bisa hapus
+        if product.user != request.user:
+            return JsonResponse({"status": "error", "message": "Unauthorized"}, status=403)
 
-    product_id = request.POST.get('id')
-    if not product_id:
-        return HttpResponseBadRequest('Missing id')
-
-    product = get_object_or_404(Product, pk=product_id)
-
-    # optional: cek ownership
-    if product.user != request.user:
-        return HttpResponseForbidden('Not allowed')
-    product = get_object_or_404(Product, pk=product_id)
-
-    # name = request.POST.get("name")
-    # price = request.POST.get("price")
-    # description = request.POST.get("description")
-    # category = request.POST.get("category")
-    # thumbnail = request.POST.get("thumbnail")
-    # is_featured = request.POST.get("is_featured") == 'on'  # checkbox handling
-    # user = request.user
-
-    # new_product = Product(
-    #     name = name, 
-    #     price = price, 
-    #     description = description,
-    #     category = category,
-    #     thumbnail = thumbnail,
-    #     is_featured = is_featured,
-    #     user = user
-    # )
-    # new_product.save()
-
-    # return HttpResponse(b"CREATED", status=201)
-
-
-    # ambil data dan update
-    product.name = request.POST.get('name', product.name)
-    product.price = int(request.POST.get('price', product.price or 0))
-    product.description = request.POST.get('description', product.description)
-    product.category = request.POST.get('category', product.category)
-    product.thumbnail = request.POST.get('thumbnail', product.thumbnail)
-    product.is_featured = 'is_featured' in request.POST
-    product.save()
-
-    return JsonResponse({
-        'status': 'ok',
-        'id': str(product.pk),
-        'name': product.name,
-        'price': product.price,
-        'description': product.description,
-        'category': product.category,
-        'thumbnail': product.thumbnail,
-        'is_featured': product.is_featured,
-    })
+        product.delete()
+        return JsonResponse({"status": "success", "message": "Product deleted successfully!"})
+    except Product.DoesNotExist:
+        return JsonResponse({"status": "error", "message": "Product not found."}, status=404)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)

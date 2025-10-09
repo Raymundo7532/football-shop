@@ -81,6 +81,7 @@
       </button>
     </div>
   </div>
+  {% include 'modal.html' %}
 </div>
 
 <script>
@@ -176,8 +177,12 @@ function buildProductCardElement(productItem) {
 
   const editDeleteButtons = CURRENT_USER_ID && Number(CURRENT_USER_ID) === Number(productItem.user_id)
     ? `<div class='flex space-x-2'>
-        <a href='${editLink}' class='text-gray-600 hover:text-gray-700 text-sm transition-colors'>Edit</a>
-        <a href='${deleteLink}' class='text-red-600 hover:text-red-700 text-sm transition-colors' onclick='return confirm("Are you sure you want to delete this article?")'>Delete</a>
+        <button type="button" data-product-id="${productItem.id}"" class='edit-btn text-gray-600 hover:text-gray-700 text-sm transition-colors'>
+          Edit
+        </button>
+        <button type="button" data-product-id="${productItem.id}" class='delete-btn text-red-600 hover:text-red-700 text-sm transition-colors'>
+          Delete
+        </button>
       </div>`
     : '';
 
@@ -214,6 +219,25 @@ function buildProductCardElement(productItem) {
   `;
 
   articleElement.innerHTML = completeCardHtml;
+
+  // --- attach event listeners safely ---
+  // Edit button: gunakan closure productItem supaya showModal menerima object asli
+  const editBtn = articleElement.querySelector('.edit-btn');
+  if (editBtn) {
+    editBtn.addEventListener('click', function () {
+      // productItem ada di scope buildProductCardElement — panggil modal dengan object
+      showModal(productItem);
+    });
+  }
+
+  // Delete button: gunakan data attribute already set => panggil showDeleteModal
+  const deleteBtn = articleElement.querySelector('.delete-btn');
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', function () {
+      showDeleteModal(productItem.id);
+    });
+  }
+
   return articleElement;
 }
 
@@ -305,15 +329,15 @@ async function handleRefreshClick(e) {
 
     // kalau perlu beri umpan balik singkat ke user; kalau ada showToast, bisa dipakai:
     if (typeof showToast === 'function') {
-      showToast('Refresh Selesai', 'Daftar produk terbaru sudah dimuat.', 'success');
+      showToast('Refresh Done', 'Product list has been refreshed.', 'success');
     }
   } catch (err) {
     console.error('Refresh failed:', err);
     // notifikasi error minimal
     if (typeof showToast === 'function') {
-      showToast('Refresh Gagal', 'Cek koneksi atau coba lagi.', 'error');
+      showToast('Refresh Failed', 'Check connection or try again.', 'error');
     } else {
-      alert('Gagal memuat produk. Coba lagi.');
+      alert('Failed To Load Product. Try Again.');
     }
   } finally {
     // kembalikan tombol ke keadaan awal
@@ -327,38 +351,59 @@ if (refreshProductsButton) {
   refreshProductsButton.addEventListener('click', handleRefreshClick);
 }
 
-// Start application
-initializeProductPage();
-
 // Add event listener to detect new product
 document.addEventListener('productAdded', function() {
     // Refresh data without page reload
     fetchProductFromServer();
 });
 
-function openEditFromCard(btn) {
-  const id = btn.dataset.id;
-  // cari di allProductData
-  const product = allProductData.find(p => String(p.id) === String(id));
-  if (product) {
-    showEditModal(product);
-  } else {
-    // fetch detail dari server lalu showEditModal
-    fetch(`/json/${id}/`)
-      .then(r => r.json())
-      .then(data => {
-         // jika server kirim format Django serializers, transformasikan dulu
-         const obj = Array.isArray(data) && data[0] && data[0].fields ? Object.assign({id: data[0].pk}, data[0].fields) : data;
-         showEditModal(obj);
-      });
-  }
-}
-
-document.addEventListener('productUpdated', function(e) {
-  // e.detail berisi object hasil server; bisa update allProductData dan re-render satu card
-  // contohnya: refresh data dengan fetchProductFromServer() atau update single item di DOM
-  fetchProductFromServer(); // paling simpel
+document.addEventListener('productUpdated', function() {
+    // Refresh data without page reload
+    fetchProductFromServer();
 });
+
+document.addEventListener('productDeleted', function() {
+    fetchProductFromServer(); // fungsi yang menampilkan ulang produk di halaman utama
+  });
+
+// Start application
+initializeProductPage();
 </script>
 
+<script>
+// Function untuk handle logout
+async function handleLogout() {
+    try {
+        const response = await fetch("{% url 'main:logout' %}", {
+            method: "GET",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        });
+
+        if (response.ok) {
+            showToast("Success", "You have been logged out successfully!", "success");
+            
+            // Redirect setelah toast ditampilkan
+            setTimeout(() => {
+                window.location.href = "{% url 'main:login' %}";
+            }, 1500);
+        } else {
+            showToast("Error", "Logout failed. Please try again.", "error");
+        }
+    } catch (error) {
+        console.error("Logout error:", error);
+        showToast("Error", "An error occurred during logout.", "error");
+    }
+}
+
+// handle logout link jika ada
+const logoutLink = document.querySelector('a[href*="logout"]');
+if (logoutLink && !logoutLink.id) {
+    logoutLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        handleLogout();
+    });
+}
+</script>
 {% endblock content %}

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Register - Football Shop</title>
@@ -115,4 +116,56 @@
     </div>
   </div>
 </div>
+
+<!-- Toast JS -->
+<script src="{% static 'js/toast.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registerForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const csrfToken = formData.get("csrfmiddlewaretoken");
+
+    try {
+      const response = await fetch("{% url 'main:register' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken,
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+
+      // Hapus toast lama agar tidak tumpang tindih
+      const oldToasts = document.querySelectorAll(".toast");
+      oldToasts.forEach(t => t.remove());
+
+      if (data.success) {
+        showToast("Succes!", "Registration succeed", "success");
+
+        // Redirect ke login setelah 1,5 detik
+        setTimeout(() => {
+          window.location.href = "{% url 'main:login' %}";
+        }, 1500);
+      } else {
+        // Tampilkan setiap error sebagai toast
+        data.errors.forEach(err => {
+          showToast("Maaf!", err, "error");
+        });
+      }
+
+    } catch (err) {
+      console.error(err);
+      showToast("Error", "Terjadi kesalahan tak terduga.", "error");
+    }
+  });
+});
+</script>
+
 {% endblock content %}

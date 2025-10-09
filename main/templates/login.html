@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block meta %}
 <title>Login - Football Shop</title>
@@ -102,4 +103,73 @@
     </div>
   </div>
 </div>
+
+<!-- Toast JS -->
+<script src="{% static 'js/toast.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // cegah reload halaman
+    
+    const formData = new FormData(form);
+    const csrfToken = formData.get("csrfmiddlewaretoken");
+
+    try {
+      const response = await fetch("{% url 'main:login' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken
+        },
+        body: formData
+      });
+
+      // Jika login berhasil, server redirect → langsung ke halaman utama
+      if (response.redirected) {
+        showToast("Success", "Login successful! Redirecting...", "success");
+        setTimeout(() => window.location.href = response.url, 1200);
+        return;
+      }
+
+      // Ambil HTML response dari server untuk parsing pesan
+      const text = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(text, "text/html");
+
+      // Ambil pesan Django messages
+      const messages = doc.querySelectorAll("[class*='bg-red-'], [class*='bg-green-']");
+
+      // Bersihkan toast sebelumnya (opsional)
+      // showToast bisa otomatis handle multiple toast, jadi ini optional
+
+      if (messages.length > 0) {
+        messages.forEach(msg => {
+            let title = "Info";
+            let body = msg.textContent.trim();
+
+            if (msg.className.includes("bg-green")) {
+                title = "Succes!";
+                body = "Login succeed";
+                showToast(title, body, "success");
+            } else if (msg.className.includes("bg-red")) {
+                title = "Maaf!";
+                body = "Login gagal";
+                showToast(title, body, "error");
+            } else {
+                showToast(title, body, "info");
+            }
+        });
+      }
+
+
+    } catch (err) {
+      console.error(err);
+      showToast("Error", "Unexpected error occurred.", "error");
+    }
+  });
+});
+</script>
+
 {% endblock content %}
