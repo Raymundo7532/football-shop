@@ -39,6 +39,15 @@
         >
           Refresh
         </button>
+
+        <div class="mb-4">
+          <label for="sort-products" class="block text-sm font-medium text-gray-700">Select</label>
+          <select id="sort-products" name="sort-products" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
+            <option value="none">None</option>
+            <option value="ascending">Ascending</option>
+            <option value="descending">Descending</option>
+          </select>
+        </div>
       </div>
       {% if user.is_authenticated %}
         <div class="text-sm text-gray-500">Last login: {{ last_login }}</div>
@@ -250,14 +259,26 @@ function renderAllProductCards(productItems) {
   });
 }
 
+let sortType = null;
+
 // Filter and display product
 function filterAndDisplayProduct() {
   updateFilterButtonsAppearance();
   
-  const filteredProduct = activeFilter === 'all' 
+  var filteredProduct = activeFilter === 'all' 
     ? allProductData 
     : allProductData.filter(product => Number(product.user_id) === Number(CURRENT_USER_ID));
   
+  if (sortType === 'ascending') {
+    filteredProduct.sort((a, b) => Number(a.price) - Number(b.price));
+  } else if (sortType === 'descending' ) {
+    filteredProduct.sort((a, b) => Number(b.price) - Number(a.price));
+  } else {
+    filteredProduct = activeFilter === 'all' 
+    ? allProductData 
+    : allProductData.filter(product => Number(product.user_id) === Number(CURRENT_USER_ID));
+  }
+
   if (filteredProduct.length === 0) {
     displayPageSection({ showEmpty: true });
   } else {
@@ -349,6 +370,14 @@ async function handleRefreshClick(e) {
 // pasang listener — ini dijalankan setelah DOM & fungsi fetch tersedia
 if (refreshProductsButton) {
   refreshProductsButton.addEventListener('click', handleRefreshClick);
+}
+
+const sortProductsButton = document.getElementById('sort-products');
+if (sortProductsButton) {
+  sortProductsButton.addEventListener('click', function(e) {
+    sortType = e.target.value;
+    filterAndDisplayProduct();
+  })
 }
 
 // Add event listener to detect new product

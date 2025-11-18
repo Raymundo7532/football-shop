@@ -1,4 +1,6 @@
 import datetime
+import json
+import requests
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
@@ -7,10 +9,11 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from main.forms import ProductForm
-from main.models import Product
+from django.utils.html import strip_tags
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from main.forms import ProductForm
+from main.models import Product
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -60,7 +63,7 @@ def show_xml(request):
     return HttpResponse(xml_data, content_type="application/xml")
 
 def show_json(request):
-    produt_list = Product.objects.all()
+    product_list = Product.objects.all()
     data = [
             {
                 'id' : str(product.id),
@@ -74,7 +77,7 @@ def show_json(request):
                 'is_featured': product.is_featured,
                 'user_id': product.user_id,
             }
-            for product in produt_list
+            for product in product_list
         ]
     return JsonResponse(data, safe=False)
 
@@ -213,3 +216,68 @@ def delete_product_entry_ajax(request, product_id):
         return JsonResponse({"status": "error", "message": "Product not found."}, status=404)
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+def proxy_image(request):
+    image_url = request.GET.get('url')
+    if not image_url:
+        return HttpResponse('No URL provided', status=400)
+    
+    try:
+        # Fetch image from external source
+        response = requests.get(image_url, timeout=10)
+        response.raise_for_status()
+        
+        # Return the image with proper content type
+        return HttpResponse(
+            response.content,
+            content_type=response.headers.get('Content-Type', 'image/jpeg')
+        )
+    except requests.RequestException as e:
+        return HttpResponse(f'Error fetching image: {str(e)}', status=500)
+    
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        name = strip_tags(data.get("name", ""))  # Strip HTML tags
+        price = data.get("price", 0)
+        description = strip_tags(data.get("description", ""))  # Strip HTML tags
+        category = data.get("category", "")
+        thumbnail = data.get("thumbnail", "")
+        is_featured = data.get("is_featured", False)
+        user = request.user
+        
+        new_product = Product(
+            name=name, 
+            price=price,
+            description=description,
+            category=category,
+            thumbnail=thumbnail,
+            is_featured=is_featured,
+            user=user
+        )
+        new_product.save()
+        
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
+    
+def show_my_product_json_flutter(request, username):
+    product_list = Product.objects.filter(user__username=username)
+    data = [
+            {
+                'id' : str(product.id),
+                'name': product.name,
+                'price': product.price,
+                'description': product.description,
+                'category': product.category,
+                'thumbnail': product.thumbnail,
+                'product_views': product.product_views,
+                'created_at': product.created_at.isoformat() if product.created_at else None,
+                'is_featured': product.is_featured,
+                'user_id': product.user_id,
+                'user_username': product.user.username,
+            }
+            for product in product_list
+        ]
+    return JsonResponse(data, safe=False)
